@@ -14,6 +14,9 @@ include_directories(SYSTEM "${OPENGL_INCLUDE_DIR}")
 add_executable("${CMAKE_PROJECT_NAME}"
 
     "euclidean1/main.c"
+
+    "euclidean1/system/window.c"
+    "euclidean1/system/engine.c"
 )
 
 target_link_libraries("${CMAKE_PROJECT_NAME}"

@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Other stuff that we don't want!
+Makefile
+CMakeFiles/
+source/CMakeFiles/
+CMakeCache.txt
+*.cmake

@@ -5,6 +5,7 @@
 #include "euclidean1/system/window.h"
 
 #include "platform.h"
+#include "gl_helper.h"
 
 #include <stdio.h>
 
@@ -12,8 +13,10 @@ static engine_t engine;
 
 static void draw(void)
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+    GLCall(glClearColor(0.0f, 0.0f, 1.0f, 1.0f));
+
+    //GLCall(glPopMatrix()); // Good example of the GLCall() macro!
 
 
     glutSwapBuffers();

@@ -52,6 +52,7 @@ Mkfile.old
 dkms.conf
 
 # Other stuff that we don't want!
+bin/
 Makefile
 CMakeFiles/
 source/CMakeFiles/

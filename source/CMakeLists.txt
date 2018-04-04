@@ -17,6 +17,8 @@ add_executable("${CMAKE_PROJECT_NAME}"
 
     "euclidean1/system/window.c"
     "euclidean1/system/engine.c"
+
+    "euclidean1/math/vec2.c"
 )
 
 target_link_libraries("${CMAKE_PROJECT_NAME}"
@@ -24,5 +26,5 @@ target_link_libraries("${CMAKE_PROJECT_NAME}"
     PRIVATE "${OPENGL_LIBRARIES}"
     PRIVATE "${GLU_LIBRARIES}"
     PRIVATE "${GLUT_LIBRARIES}"
-
+    PRIVATE "m"
 )

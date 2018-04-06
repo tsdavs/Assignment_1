@@ -10,8 +10,6 @@
 
 int main(int argc, char** argv)
 {
-    window_t* hwnd;
-
     glutInit(&argc, argv);
     e_init(argv);
 

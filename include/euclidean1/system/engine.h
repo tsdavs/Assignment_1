@@ -13,8 +13,6 @@ typedef struct
     void        (*e_update)();      /**< Engine idle update loop */
     void        (*e_input)();       /**< Engine input function pointer */
 
-
-    window_t*   hwnd;               /**< Our window handle */
     bool        running;            /**< Is the game currently running??? */
 } engine_t;
 

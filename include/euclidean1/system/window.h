@@ -33,14 +33,14 @@ window_t* r_createWindow(int width, int height, const char* title);
 /**
  *  Frees this window
  */
-bool r_freeWindow(window_t* hwnd);
+bool r_freeWindow();
 
 /**
  *  Sets the callback function for this window
  *
  *  @param drawCB Pointer to draw callback function
  */
-void r_setDrawFunction(window_t* hwnd, void (*drawCB)(void));
+void r_setDrawFunction(void (*drawCB)(void));
 
 
 

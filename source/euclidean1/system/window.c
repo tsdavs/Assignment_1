@@ -9,11 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+static window_t* hwnd = NULL;
 
 window_t* r_createWindow(int width, int height, const char* title)
 {
-    window_t* hwnd; // Window handle
-
     hwnd = malloc(sizeof(window_t));
 
     if(!hwnd)
@@ -36,7 +35,7 @@ window_t* r_createWindow(int width, int height, const char* title)
     return hwnd;
 }
 
-bool r_freeWindow(window_t* hwnd)
+bool r_freeWindow()
 {
     if(hwnd != NULL)
     {
@@ -50,7 +49,7 @@ bool r_freeWindow(window_t* hwnd)
     return false;
 }
 
-void r_setDrawFunction(window_t* hwnd, void (*drawCB)(void))
+void r_setDrawFunction(void (*drawCB)(void))
 {
     if(hwnd == NULL)
     {
@@ -66,4 +65,13 @@ void r_setDrawFunction(window_t* hwnd, void (*drawCB)(void))
 
     hwnd->r_draw = drawCB;
     glutDisplayFunc(hwnd->r_draw);
+}
+
+void r_setDimensions(int width, int height)
+{
+    if(hwnd != NULL)
+    {
+        hwnd->width = width;
+        hwnd->height = height;
+    }
 }

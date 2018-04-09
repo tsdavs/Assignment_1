@@ -17,6 +17,7 @@ add_executable("${CMAKE_PROJECT_NAME}"
 
     "euclidean1/system/window.c"
     "euclidean1/system/engine.c"
+    "euclidean1/system/text.c"
 
     "euclidean1/math/vec2.c"
 )

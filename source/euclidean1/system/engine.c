@@ -7,8 +7,13 @@
 #include "platform.h"
 #include "gl_helper.h"
 
+#include "euclidean1/system/text.h"
+
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
+
+#define MILLISECOND_TIME 1000.0f
 
 static engine_t engine;
 
@@ -17,10 +22,14 @@ static engine_t engine;
  */
 static void draw(void)
 {
+    char buffer[256];
+    
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     
     // ALL RENDER CODE GOES IN HERE!!!!
-
+    r_drawString(30, 50, "Hello World!");
+    sprintf(buffer, "fps: %.2f", engine.framerate);
+    r_drawString(0, 0, buffer);
 
     glutSwapBuffers();
 
@@ -58,13 +67,10 @@ void e_input(unsigned char c, int x, int y)
 void e_update(void)
 {
     static float prev_t = -1.0f;
-    static long prev_tl = 0;
     float t = 0.0f;
-    float t2 = 0.0f;
     float dt = 0.0f;
-    long tl = 0;
 
-    t = glutGet(GLUT_ELAPSED_TIME); // Number of ms since glutInit() was called
+    t = glutGet(GLUT_ELAPSED_TIME) / MILLISECOND_TIME; // Number of ms since glutInit() was called
     if(prev_t < 0.0f)
     {
         prev_t = t;
@@ -72,31 +78,20 @@ void e_update(void)
     }          
 
     dt = t - prev_t;
-
-    // Ew
-    t2 = t;
-    t2 /= 1000;
-    t2 = floor(t2 + 0.5) + 1000.0f;
-    tl = (float)t2;
-    
-    if(tl != prev_tl)
-    {
-        prev_tl = tl;
-        printf("tick: %.2f\n", engine.framerate * 1000);
-    }
     
     // ALL UPDATE STUFF NEEDS TO GO IN HERE!!!!
     //
     
     prev_t = t;
     
-    dt = t - engine.last_framerate;
-    if(dt > engine.frame_interval)
+    dt = t - engine.last_frametime;
+    if(dt > 0.2)
     {        
-        engine.framerate = engine.frames/dt;
-        engine.last_framerate = t;
+        engine.framerate = (engine.frames/dt);
+        engine.last_frametime = t;
         engine.frames = 0;
     }
+
     glutPostRedisplay();
 }
 
@@ -112,11 +107,11 @@ bool e_init(char** argv)
     // Engine stuff
     engine.frames           = 0;
     engine.frame_interval   = 0.2;
-    engine.last_framerate   = 0.0f;
+    engine.last_frametime   = 0.0f;
     engine.time_elapsed     = 0.0f;
     engine.framerate        = 0.0f;    
 
-    GLCall(glClearColor(0.0f, 0.0f, 1.0f, 1.0f));
+    GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
 
     engine.running = true;
     

@@ -20,6 +20,8 @@ add_executable("${CMAKE_PROJECT_NAME}"
     "euclidean1/system/text.c"
 
     "euclidean1/math/vec2.c"
+
+	"euclidean1/object/water.c"
 )
 
 target_link_libraries("${CMAKE_PROJECT_NAME}"

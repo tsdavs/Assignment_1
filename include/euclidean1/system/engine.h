@@ -16,6 +16,8 @@ typedef struct
 
     window_t*   hwnd;               /**< Our window handle */
     bool        running;            /**< Is the game currently running??? */
+    bool        debug;              /**< Is debug mode enabled? */
+    bool        wireframe;          /**< Should we draw in wireframe mode? */
 
     // Timing related stuff
     float       time_elapsed;       /**< Elapsed time since our program started (in ms) */

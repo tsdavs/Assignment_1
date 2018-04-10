@@ -1,0 +1,7 @@
+/**
+ *	Angle related functions and constants
+ */
+
+#define M_PI 3.14159265358979323846263383279f // My version of gcc doesn't have M_PI so let's just define it as a pre-processor constant
+
+#define ANG_2_DEGREES(x) (float)(x*(180.0f/M_PI))

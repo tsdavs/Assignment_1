@@ -15,6 +15,7 @@ typedef struct
 {
 	int 	tesselations;	/**< Number of tesselations to draw */
 	
+    float*  x_vals;
 	float*	y_vals;			/**< Calculated y values */
 
 } water_t;
@@ -28,6 +29,10 @@ void w_calculateSine(float dt);
  *	Draw this sine wave
  */
 void w_drawSine(bool drawNormal, bool drawTangent);
+
+float w_calcSineAtX(float x);
+
+float w_getAngleAtX(float x);
 
 
 #endif

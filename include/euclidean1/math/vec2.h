@@ -4,6 +4,8 @@
 #ifndef _VEC2_INCLUDED_H
 #define _VEC2_INCLUDED_H
 
+#include <stdbool.h>
+
 /**
  *  Our vec2 class. We're using 'traditional' mathematical notation of i and j for this.
  */
@@ -64,7 +66,7 @@ float v_getAngle(vec2_t* vec);
  *
  *  @param vec Vector we want to draw
  */
-void v_draw(vec2_t* vec, float r, float g, float b);
+void v_draw(vec2_t* vec, float r, float g, float b, float s, bool normalize);
 
 
 #endif

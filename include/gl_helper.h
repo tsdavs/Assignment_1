@@ -11,7 +11,9 @@
 /**
  *  Wrapper to call _and_ log any OpenGL function passed to it. 
  *  Thanks to Yan Chernikov (@ EA) for this one!!!
- */
+ *
+ *  NOTE: This CANNOT be used after glBegin() under any circumstance. It will generate a GL_INVALID_OPERATION if so
+ **/
 #define GLCall(f) GLClearError();\
     f;\
     GLLog();\

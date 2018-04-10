@@ -53,11 +53,25 @@ float v_getAngle(vec2_t* vec)
     return atanf(vec->j / vec->i);
 }
 
-void v_draw(vec2_t* vec, float r, float g, float b)
+void v_draw(vec2_t* vec, float r, float g, float b, float s, bool normalize)
 {
-    GLCall(glBegin(GL_LINES));
-        GLCall(glColor3f(r, g, b));
-        GLCall(glVertex3f(vec->x, vec->y, 1.0f));
-        GLCall(glVertex3f(vec->x + vec->i, vec->y + vec->j, 1.0f))
-    GLCall(glEnd());
+    GLCall(glColor3f(r, g, b))
+
+    if(normalize)
+    {
+        float mag = v_getMagnitude(vec);
+        glBegin(GL_LINES);
+            glVertex2f(vec->x-(vec->i/mag)*s, vec->y-(vec->j/mag)*s);
+            glVertex2f(vec->x+(vec->i/mag)*s, vec->y+(vec->j/mag)*s);
+        glEnd();
+    }
+    else
+    {
+
+        glBegin(GL_LINES);
+            glVertex3f(vec->x, vec->y, 1.0f);
+            glVertex3f(vec->x + vec->i, vec->y + vec->j, 1.0f);
+        glEnd(); 
+    }
+
 }

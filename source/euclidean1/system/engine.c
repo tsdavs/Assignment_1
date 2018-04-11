@@ -12,6 +12,7 @@
 #include "euclidean1/object/water.h"
 #include "euclidean1/object/boat.h"
 #include "euclidean1/object/cannon.h"
+#include "euclidean1/system/aabb.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -57,6 +58,9 @@ static void draw(void)
     {
         r_drawString(0, 0, buffer);
         r_drawString(0, 30, "DEBUG");
+        
+        drawAABB(&(p1.b_vol));
+        drawAABB(&(p2.b_vol));
     }
 
     b_drawBoat(&p1);
@@ -91,11 +95,19 @@ static void e_update(void)
     
     w_calculateSine(dt);
 
-    p1.y = w_calcSineAtX(p1.x); // Absolutely disgusting hack
-    p1.z_rot = ANG_2_DEGREES(w_getAngleAtX(p1.x));
+    //.y = w_calcSineAtX(p1.x); // Absolutely disgusting hack
+    //.z_rot = ANG_2_DEGREES(w_getAngleAtX(p1.x));
 
-    p2.y = w_calcSineAtX(p2.x); // Absolutely disgusting hack
-    p2.z_rot = ANG_2_DEGREES(w_getAngleAtX(p2.x));
+    //.y = w_calcSineAtX(p2.x); // Absolutely disgusting hack
+    //.z_rot = ANG_2_DEGREES(w_getAngleAtX(p2.x));
+
+    b_update(&p1, dt);
+    b_update(&p2, dt);
+
+    if(testIntersection(&(p1.b_vol), &(p2.b_vol)))
+    {
+        printf("collide!\n");
+    }
 
     prev_t = t;
     
@@ -160,10 +172,12 @@ void e_input(unsigned char c, int x, int y)
         break;
     // Left player controls
     case 'a':
-        p1.x -= 0.01;
+        //p1.x -= 0.01;
+        p1.curr_speed -= BOAT_ACCEL;
         break;
     case 'd':
-        p1.x += 0.01;
+        //p1.x += 0.01;
+        p1.curr_speed += BOAT_ACCEL;
         break;
     case 'q':
         if(p1.cannon.z_rot < 90.0f)
@@ -175,10 +189,10 @@ void e_input(unsigned char c, int x, int y)
         break;
     // Right player controls
     case 'k':
-        p2.x -= 0.01;
+        p2.curr_speed -= BOAT_ACCEL;
         break;
     case 'l':
-        p2.x += 0.01;
+        p2.curr_speed += BOAT_ACCEL;
         break;
     case 'o':
         if(p2.cannon.z_rot < 90.0f)
@@ -216,6 +230,7 @@ bool e_init(char** argv)
 	water.y_vals = (float*)calloc(WATER_MAX_TESS + 1, sizeof(float));
     water.x_vals = (float*)calloc(WATER_MAX_TESS + 1, sizeof(float));
 
+    /**
     p1.x = -0.8f;
     p1.y = 0.0f;
     p1.width = 0.1f;
@@ -238,6 +253,11 @@ bool e_init(char** argv)
     p2.cannon.length = 0.5f;
     p2.cannon.z_rot = 45.0f;
 
+    **/
+
+    b_init(&p1, -0.8f, 0.0f, 0.1f, 0.1f, 0.5f, 45.0f, 1.0f, 0.0f, 0.0f, false);
+    b_init(&p2, 0.8f, 0.0f, 0.1f, 0.1f, 0.5f, 45.0f, 0.0f, 0.0f, 1.0f, true);
+    
     c.length = 0.5;
     c.z_rot = 45.0f;
 

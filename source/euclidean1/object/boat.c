@@ -111,6 +111,19 @@ void b_update(boat_t* b, float dt)
     b->x += b->curr_speed * dt * 1.5f;
     b->curr_speed *= (FRICTIONAL_FORCE * 0.048f);
 
+	/**
+	if(b->curr_speed > 0.0f)
+	{
+		if(b->curr_speed < 0.0005f)
+			b->curr_speed = 0.0f;
+	}
+	else 
+	{
+		if(b->curr_speed > -0.0005f)
+			b->curr_speed = 0.0f;
+	}	
+	**/
+
     b->y            = w_calcSineAtX(b->x);
     b->z_rot        = ANG_2_DEGREES(w_getAngleAtX(b->x));
 

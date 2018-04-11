@@ -31,8 +31,6 @@ static bool drawTangents    = false;
 static boat_t p1;
 static boat_t p2;
 
-static cannon_t c;
-
 /**
  *  Our draw function
  */
@@ -65,7 +63,6 @@ static void draw(void)
 
     b_drawBoat(&p1);
     b_drawBoat(&p2);
-    c_drawCannon(&c, 0.0f, 1.0f, 0.0f);
 
 	w_drawSine(drawNormals, drawTangents);
   
@@ -104,10 +101,14 @@ static void e_update(void)
     b_update(&p1, dt);
     b_update(&p2, dt);
 
+	// A collision has occured between the two boats
     if(testIntersection(&(p1.b_vol), &(p2.b_vol)))
     {
-        printf("collide!\n");
-    }
+		// Classical mechanics ala Jurassic Park: Trespasser
+		// Move the two offending boat away until they are no longer touching.
+		
+		p1.curr_speed -= 0.006f;
+	}
 
     prev_t = t;
     
@@ -230,36 +231,8 @@ bool e_init(char** argv)
 	water.y_vals = (float*)calloc(WATER_MAX_TESS + 1, sizeof(float));
     water.x_vals = (float*)calloc(WATER_MAX_TESS + 1, sizeof(float));
 
-    /**
-    p1.x = -0.8f;
-    p1.y = 0.0f;
-    p1.width = 0.1f;
-    p1.height = 0.1f;
-    p1.r = 1.0f;
-    p1.g = 0.0f;
-    p1.b = 0.0f;
-    p1.flip = false;
-    p1.cannon.length = 0.5f;
-    p1.cannon.z_rot = 45.0f;
-
-    p2.x = 0.8f;
-    p2.y = 0.0f;
-    p2.width = 0.1f;
-    p2.height = 0.1f;
-    p2.r = 0.0f;
-    p2.g = 0.0f;
-    p2.b = 1.0f;
-    p2.flip = true;
-    p2.cannon.length = 0.5f;
-    p2.cannon.z_rot = 45.0f;
-
-    **/
-
     b_init(&p1, -0.8f, 0.0f, 0.1f, 0.1f, 0.5f, 45.0f, 1.0f, 0.0f, 0.0f, false);
     b_init(&p2, 0.8f, 0.0f, 0.1f, 0.1f, 0.5f, 45.0f, 0.0f, 0.0f, 1.0f, true);
-    
-    c.length = 0.5;
-    c.z_rot = 45.0f;
 
     srand(time(NULL));
 

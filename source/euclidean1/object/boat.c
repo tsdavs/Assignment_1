@@ -2,11 +2,14 @@
  *  Implementation of boat.h
  */
 #include "euclidean1/object/boat.h"
+#include "euclidean1/object/water.h"
+#include "euclidean1/math/angle.h"
 
 #include "gl_helper.h"
 
 #include <math.h>
 
+#define FRICTIONAL_FORCE 20.0f
 
 static float prev_z_rot = 0.0f;
 
@@ -49,6 +52,34 @@ static void r_drawHull(float r, float g, float b, float z_rot, float width, floa
     GLCall(glPopMatrix())
 }
 
+void b_init(boat_t* boat, float x, float y, float width, float height, float c_length, float c_zrot, float r, float g, float b, bool flip)
+{
+    if(boat == NULL)
+    {
+        printf("%s: boat == NULL!\n", __PRETTY_FUNCTION__);
+        exit(-1);
+    }
+
+    boat->x                 = x;
+    boat->y                 = y;
+    boat->width             = width;
+    boat->height            = height;
+    boat->cannon.length     = c_length;
+    boat->cannon.z_rot      = c_zrot;
+
+    boat->r                 = r;
+    boat->g                 = g;
+    boat->b                 = b;
+
+    boat->flip              = flip;
+
+    boat->b_vol.x           = x;
+    boat->b_vol.y           = y + 0.01f - (height / 2.0f);
+    boat->b_vol.width       = width;
+    boat->b_vol.height      = height + 0.02;
+    boat->b_vol.scale       = 0.35;    
+}
+
 void b_drawBoat(boat_t* b)
 {
     GLCall(glPushMatrix())
@@ -73,4 +104,18 @@ void b_drawBoat(boat_t* b)
     GLCall(glTranslatef(b->width - 0.065, -0.015f, 0.0f))
     c_drawCannon(&b->cannon, b->r, b->g, b->b);
     GLCall(glPopMatrix())
+}
+
+void b_update(boat_t* b, float dt)
+{   
+    b->x += b->curr_speed * dt * 1.5f;
+    b->curr_speed *= (FRICTIONAL_FORCE * 0.048f);
+
+    b->y            = w_calcSineAtX(b->x);
+    b->z_rot        = ANG_2_DEGREES(w_getAngleAtX(b->x));
+
+    b->b_vol.x      = b->x;
+    b->b_vol.y      = b->y + 0.01f - (b->height / 2.0f);
+    b->b_vol.min    = b->x - b->width;
+    b->b_vol.max    = b->x + b->width; 
 }

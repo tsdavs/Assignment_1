@@ -16,8 +16,8 @@ void c_drawCannon(cannon_t* c, float r, float g, float b)
     glBegin(GL_QUADS);
         glVertex3f(0.0f, 0.0f, -0.8f);
         glVertex3f(c->length, 0.0f, -0.8f);
-        glVertex3f(c->length, -0.2f, -0.8f);
-        glVertex3f(0.0f, -0.2f, -0.8f);
+        glVertex3f(c->length, -0.15f, -0.8f);
+        glVertex3f(0.0f, -0.15f, -0.8f);
     glEnd();
 
     GLCall(glPopMatrix())

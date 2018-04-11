@@ -11,6 +11,7 @@
 #include "euclidean1/system/text.h"
 #include "euclidean1/object/water.h"
 #include "euclidean1/object/boat.h"
+#include "euclidean1/object/cannon.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -28,6 +29,8 @@ static bool drawTangents    = false;
 
 static boat_t p1;
 static boat_t p2;
+
+static cannon_t c;
 
 /**
  *  Our draw function
@@ -58,6 +61,7 @@ static void draw(void)
 
     b_drawBoat(&p1);
     b_drawBoat(&p2);
+    c_drawCannon(&c, 0.0f, 1.0f, 0.0f);
 
 	w_drawSine(drawNormals, drawTangents);
   
@@ -126,7 +130,7 @@ void e_input(unsigned char c, int x, int y)
 {
     switch(c)
     {
-    case 'q':
+    case 27:
         exit(EXIT_SUCCESS);
         break;
 	case '+':
@@ -145,7 +149,7 @@ void e_input(unsigned char c, int x, int y)
     case '\'':
         engine.debug = !engine.debug;
         break;
-    case 's':
+    case 'g':
         engine.running = !engine.running;
         break;
     case 'n':
@@ -154,17 +158,35 @@ void e_input(unsigned char c, int x, int y)
     case 't':
         drawTangents = !drawTangents;
         break;
+    // Left player controls
     case 'a':
         p1.x -= 0.01;
         break;
     case 'd':
         p1.x += 0.01;
         break;
+    case 'q':
+        if(p1.cannon.z_rot < 90.0f)
+            c_rotateCannon(&p1.cannon, 2.0f);
+        break;
+    case 'Q':
+        if(p1.cannon.z_rot > 0.0f)
+            c_rotateCannon(&p1.cannon, -2.0f);
+        break;
+    // Right player controls
     case 'k':
         p2.x -= 0.01;
         break;
     case 'l':
         p2.x += 0.01;
+        break;
+    case 'o':
+        if(p2.cannon.z_rot < 90.0f)
+            c_rotateCannon(&p2.cannon, 2.0f);
+        break;
+    case 'O':
+        if(p2.cannon.z_rot > 0.0f)
+            c_rotateCannon(&p2.cannon, -2.0f);
         break;
     default:
         break;
@@ -202,6 +224,8 @@ bool e_init(char** argv)
     p1.g = 0.0f;
     p1.b = 0.0f;
     p1.flip = false;
+    p1.cannon.length = 0.5f;
+    p1.cannon.z_rot = 45.0f;
 
     p2.x = 0.8f;
     p2.y = 0.0f;
@@ -211,6 +235,11 @@ bool e_init(char** argv)
     p2.g = 0.0f;
     p2.b = 1.0f;
     p2.flip = true;
+    p2.cannon.length = 0.5f;
+    p2.cannon.z_rot = 45.0f;
+
+    c.length = 0.5;
+    c.z_rot = 45.0f;
 
     srand(time(NULL));
 

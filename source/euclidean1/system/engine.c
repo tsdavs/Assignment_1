@@ -7,8 +7,10 @@
 #include "platform.h"
 #include "gl_helper.h"
 
+#include "euclidean1/math/angle.h"
 #include "euclidean1/system/text.h"
 #include "euclidean1/object/water.h"
+#include "euclidean1/object/boat.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -24,6 +26,9 @@ extern water_t water;
 static bool drawNormals     = false;
 static bool drawTangents    = false;
 
+static boat_t p1;
+static boat_t p2;
+
 /**
  *  Our draw function
  */
@@ -32,7 +37,8 @@ static void draw(void)
     char buffer[256];
     
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT))
-    
+    GLCall(glEnable(GL_DEPTH_TEST))
+
     if(engine.wireframe)
     {
         GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE))
@@ -49,13 +55,55 @@ static void draw(void)
         r_drawString(0, 0, buffer);
         r_drawString(0, 30, "DEBUG");
     }
-    
+
+    b_drawBoat(&p1);
+    b_drawBoat(&p2);
+
 	w_drawSine(drawNormals, drawTangents);
   
 
 
     glutSwapBuffers();
     engine.frames++;
+}
+
+static void e_update(void)
+{
+    static float prev_t = -1.0f;
+    float t = 0.0f;
+    float dt = 0.0f;
+
+    t = glutGet(GLUT_ELAPSED_TIME) / MILLISECOND_TIME; // Number of ms since glutInit() was called
+
+    // Skip the first frame to prevent / 0
+    // Also keep the clock running even if the sim is paused to dt doesn't become huge
+    if(prev_t < 0.0f || !engine.running)
+    {
+        prev_t = t;
+        return;
+    }          
+
+    dt = t - prev_t;
+    
+    w_calculateSine(dt);
+
+    p1.y = w_calcSineAtX(p1.x); // Absolutely disgusting hack
+    p1.z_rot = ANG_2_DEGREES(w_getAngleAtX(p1.x));
+
+    p2.y = w_calcSineAtX(p2.x); // Absolutely disgusting hack
+    p2.z_rot = ANG_2_DEGREES(w_getAngleAtX(p2.x));
+
+    prev_t = t;
+    
+    dt = t - engine.last_frametime;
+    if(dt > 0.2)
+    {        
+        engine.framerate = (engine.frames/dt);
+        engine.last_frametime = t;
+        engine.frames = 0;
+    }
+
+    glutPostRedisplay();
 }
 
 static void r_reshape(int width, int height)
@@ -94,7 +142,7 @@ void e_input(unsigned char c, int x, int y)
     case 'w':
         engine.wireframe = !engine.wireframe;
         break;
-    case 'd':
+    case '\'':
         engine.debug = !engine.debug;
         break;
     case 's':
@@ -106,45 +154,21 @@ void e_input(unsigned char c, int x, int y)
     case 't':
         drawTangents = !drawTangents;
         break;
+    case 'a':
+        p1.x -= 0.01;
+        break;
+    case 'd':
+        p1.x += 0.01;
+        break;
+    case 'k':
+        p2.x -= 0.01;
+        break;
+    case 'l':
+        p2.x += 0.01;
+        break;
     default:
         break;
     }
-}
-
-void e_update(void)
-{
-    static float prev_t = -1.0f;
-    float t = 0.0f;
-    float dt = 0.0f;
-
-    t = glutGet(GLUT_ELAPSED_TIME) / MILLISECOND_TIME; // Number of ms since glutInit() was called
-
-    // Skip the first frame to prevent / 0
-    // Also keep the clock running even if the sim is paused to dt doesn't become huge
-    if(prev_t < 0.0f || !engine.running)
-    {
-        prev_t = t;
-        return;
-    }          
-
-    dt = t - prev_t;
-    
-    // ALL UPDATE STUFF NEEDS TO GO IN HERE!!!!
-    w_calculateSine(dt);
-
-
-
-    prev_t = t;
-    
-    dt = t - engine.last_frametime;
-    if(dt > 0.2)
-    {        
-        engine.framerate = (engine.frames/dt);
-        engine.last_frametime = t;
-        engine.frames = 0;
-    }
-
-    glutPostRedisplay();
 }
 
 bool e_init(char** argv)
@@ -168,6 +192,25 @@ bool e_init(char** argv)
 	// Water init
 	water.tesselations = 64;
 	water.y_vals = (float*)calloc(WATER_MAX_TESS + 1, sizeof(float));
+    water.x_vals = (float*)calloc(WATER_MAX_TESS + 1, sizeof(float));
+
+    p1.x = -0.8f;
+    p1.y = 0.0f;
+    p1.width = 0.1f;
+    p1.height = 0.1f;
+    p1.r = 1.0f;
+    p1.g = 0.0f;
+    p1.b = 0.0f;
+    p1.flip = false;
+
+    p2.x = 0.8f;
+    p2.y = 0.0f;
+    p2.width = 0.1f;
+    p2.height = 0.1f;
+    p2.r = 0.0f;
+    p2.g = 0.0f;
+    p2.b = 1.0f;
+    p2.flip = true;
 
     srand(time(NULL));
 

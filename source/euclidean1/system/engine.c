@@ -12,6 +12,7 @@
 #include "euclidean1/object/water.h"
 #include "euclidean1/object/boat.h"
 #include "euclidean1/object/cannon.h"
+#include "euclidean1/object/tower.h"
 #include "euclidean1/system/aabb.h"
 
 #include <stdio.h>
@@ -28,8 +29,9 @@ extern water_t water;
 static bool drawNormals     = false;
 static bool drawTangents    = false;
 
-static boat_t p1;
-static boat_t p2;
+static boat_t 	p1;
+static boat_t 	p2;
+static tower_t	tower;
 
 /**
  *  Our draw function
@@ -59,11 +61,12 @@ static void draw(void)
         
         drawAABB(&(p1.b_vol));
         drawAABB(&(p2.b_vol));
-    }
+    	drawAABB(&(tower.b_vol));
+	}	
 
     b_drawBoat(&p1);
     b_drawBoat(&p2);
-
+	t_draw(&tower, 1.0f, 1.0f, 0.0f);
 	w_drawSine(drawNormals, drawTangents);
   
 
@@ -108,6 +111,16 @@ static void e_update(void)
 		// Move the two offending boat away until they are no longer touching.
 		
 		p1.curr_speed -= 0.006f;
+	}
+
+	if(testIntersection(&(p1.b_vol), &(tower.b_vol)))
+	{
+		p1.curr_speed -= 0.027f;
+	}
+
+	if(testIntersection(&(p2.b_vol), &(tower.b_vol)))
+	{
+		p2.curr_speed += 0.027f;
 	}
 
     prev_t = t;
@@ -233,8 +246,9 @@ bool e_init(char** argv)
 
     b_init(&p1, -0.8f, 0.0f, 0.1f, 0.1f, 0.5f, 45.0f, 1.0f, 0.0f, 0.0f, false);
     b_init(&p2, 0.8f, 0.0f, 0.1f, 0.1f, 0.5f, 45.0f, 0.0f, 0.0f, 1.0f, true);
+	t_init(&tower, -0.25f, 0.3f, 0.5f, -1.3f);
 
-    srand(time(NULL));
+	srand(time(NULL));
 
     GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
 	GLCall(glEnable(GL_BLEND))

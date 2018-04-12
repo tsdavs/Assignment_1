@@ -102,7 +102,8 @@ void b_drawBoat(boat_t* b)
 
     // Draw the cannon
     GLCall(glTranslatef(b->width - 0.065, -0.015f, 0.0f))
-    c_drawCannon(&b->cannon, b->r, b->g, b->b);
+    GLCall(glScalef(0.1f, 0.1f, 0.0f))
+	c_drawCannon(&b->cannon, b->r, b->g, b->b);
     GLCall(glPopMatrix())
 }
 

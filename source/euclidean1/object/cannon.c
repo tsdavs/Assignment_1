@@ -10,7 +10,7 @@ void c_drawCannon(cannon_t* c, float r, float g, float b)
     GLCall(glColor4f(r, g, b, 1.0f))
 
     GLCall(glPushMatrix())
-    GLCall(glScalef(0.1f, 0.1f, 1.0f))
+    //GLCall(glScalef(0.1f, 0.1f, 1.0f))
     GLCall(glRotatef(c->z_rot, 0.0f, 0.0f, 1.0f))
 
     glBegin(GL_QUADS);

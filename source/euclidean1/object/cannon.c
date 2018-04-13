@@ -55,7 +55,7 @@ void c_fireCannon(cannon_t* c, float angle, float scale, bool flip)
     else
         x = c->x - ((c->length * scale) * cosf(ANG_2_RAD(c->z_rot)));
 
-    y = c->y + ((c->length * scale) * sinf(ANG_2_RAD(c->z_rot)));
+    y = c->y + ((c->length * scale) * sinf(ANG_2_RAD(c->z_rot))) + 0.1f;
 
     //x = x * cosf(ANG_2_RAD(angle)) - y * sinf(ANG_2_RAD(angle));
     //y = x * sinf(ANG_2_RAD(angle)) + x * cosf(ANG_2_RAD(angle));

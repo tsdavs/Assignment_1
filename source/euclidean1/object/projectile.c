@@ -85,3 +85,14 @@ void p_draw(projectile_t* p)
 
     GLCall(glPopMatrix())
 }
+
+void p_remove(projectile_t* p, int i)
+{
+    if(p == NULL)
+        return;
+
+    free(p);
+    p = NULL;
+    p_list.projectiles[i] = NULL;
+    p_list.num--;
+}

@@ -162,24 +162,21 @@ static void e_update(void)
             {
                 printf("p1 collision!\n");
 
-                free(p);
-                p_list.projectiles[i] = NULL; 
+                p_remove(p, i);
             }
 
             if(testIntersection(&(p2.b_vol), &(p->b_vol)))
             {
                 printf("p2 collision!\n");
 
-                free(p);
-                p_list.projectiles[i] = NULL;
+                p_remove(p, i);
             }
 
             if(testIntersection(&(tower.b_vol), &(p->b_vol)))
             {
                 printf("tower collision!\n");
 
-                free(p);
-                p_list.projectiles[i] = NULL;
+                p_remove(p, i);
             }
         }
     }
@@ -277,12 +274,23 @@ void e_input(unsigned char c, int x, int y)
         if(p2.cannon.z_rot > 0.0f)
             c_rotateCannon(&p2.cannon, -2.0f);
         break;
-
     case 'e':
         b_fire(&p1);
         break;
     case 'i':
         b_fire(&p2);
+        break;
+
+    case 'f':
+        if(tower.cannon.z_rot < 180.0f)
+            c_rotateCannon(&tower.cannon, 1.0f);
+        break;
+    case 'h':
+        if(tower.cannon.z_rot > 0.0f)
+            c_rotateCannon(&tower.cannon, -1.0f);
+        break;
+    case ' ':
+        t_fire(&tower);
         break;
     default:
         break;

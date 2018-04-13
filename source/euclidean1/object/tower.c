@@ -15,7 +15,10 @@ void t_init(tower_t* t, float x, float y, float width, float height)
 	t->height 	= height;
 
 	t->b_vol.x	 = x;
-	t->b_vol.y	 = y;
+	t->b_vol.y	 = y + height;
+
+	t->b_vol.width  = width;
+	t->b_vol.height = -height;
 
 	t->b_vol.min = x;
 	t->b_vol.max = x + width;	
@@ -24,8 +27,10 @@ void t_init(tower_t* t, float x, float y, float width, float height)
 	t->cannon.y = y + 0.0f;
 	t->cannon.length = 0.5f;
 	
-	t->b_vol.width = width;
-	t->b_vol.height = height;
+
+	printAABB(&t->b_vol);
+	//t->b_vol.width = width;
+	//t->b_vol.height = height;
 }
 
 void t_draw(tower_t* t, float r, float g, float b)
@@ -46,6 +51,4 @@ void t_draw(tower_t* t, float r, float g, float b)
 	c_drawCannon(&(t->cannon), 1.0f, 1.0f, 0.0f);
 
 	GLCall(glPopMatrix())
-
-
 }

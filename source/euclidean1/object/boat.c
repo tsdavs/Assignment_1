@@ -52,7 +52,7 @@ static void r_drawHull(float r, float g, float b, float z_rot, float width, floa
     GLCall(glPopMatrix())
 }
 
-void b_init(boat_t* boat, float x, float y, float width, float height, float c_length, float c_zrot, float r, float g, float b, bool flip)
+void b_init(boat_t* boat, int id, float x, float y, float width, float height, float c_length, float c_zrot, float r, float g, float b, bool flip)
 {
     if(boat == NULL)
     {
@@ -66,6 +66,7 @@ void b_init(boat_t* boat, float x, float y, float width, float height, float c_l
     boat->height            = height;
     boat->cannon.length     = c_length;
     boat->cannon.z_rot      = c_zrot;
+    boat->id                = id;
 
     boat->r                 = r;
     boat->g                 = g;
@@ -128,8 +129,26 @@ void b_update(boat_t* b, float dt)
     b->y            = w_calcSineAtX(b->x);
     b->z_rot        = ANG_2_DEGREES(w_getAngleAtX(b->x));
 
+    b->cannon.x     = b->x + (b->width - 0.065f);;
+    b->cannon.y     = b->y - 0.015f;
+
     b->b_vol.x      = b->x;
     b->b_vol.y      = b->y + 0.01f - (b->height / 2.0f);
     b->b_vol.min    = b->x - b->width;
     b->b_vol.max    = b->x + b->width; 
+
+    if(b->wait_time > 0.0f)
+        b->wait_time -= dt;
+
+    if(b->wait_time < 0.0f)
+        b->wait_time = 0.0f;
+}
+
+void b_fire(boat_t* b)
+{  
+    if(b->wait_time <= 0.0f)
+    {
+        b->wait_time = 1.0f;
+        c_fireCannon(&b->cannon, b->z_rot, 0.1, b->flip);
+    }
 }

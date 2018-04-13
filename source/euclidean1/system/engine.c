@@ -158,7 +158,7 @@ static void e_update(void)
         {
             projectile_t* p = p_list.projectiles[i];
 
-            if(testIntersection(&(p1.b_vol), &(p->b_vol)) && p1.id != 0)
+            if(testIntersection(&(p1.b_vol), &(p->b_vol)))
             {
                 printf("p1 collision!\n");
 
@@ -166,7 +166,7 @@ static void e_update(void)
                 p_list.projectiles[i] = NULL; 
             }
 
-            if(testIntersection(&(p2.b_vol), &(p->b_vol)) && p2.id != 1)
+            if(testIntersection(&(p2.b_vol), &(p->b_vol)))
             {
                 printf("p2 collision!\n");
 

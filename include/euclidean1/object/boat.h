@@ -26,6 +26,9 @@ typedef struct
     bool        flip;
 
     float       curr_speed; /**< Current boat speed */
+    float       wait_time;
+
+    int         id;
 
     cannon_t    cannon;
     AABB        b_vol;      /**< This boat's bounding volume */
@@ -35,7 +38,7 @@ typedef struct
 /**
  *  Initialise a boat
  */
-void b_init(boat_t* boat, float x, float y, float width, float height, float c_length, float c_zrot, float r, float b, float g, bool flip);
+void b_init(boat_t* boat, int id, float x, float y, float width, float height, float c_length, float c_zrot, float r, float b, float g, bool flip);
 
 /**
  *  Boat update function
@@ -46,5 +49,10 @@ void b_update(boat_t* b, float dt);
  *  Draw boat using a hierarchial method.
  */
 void b_drawBoat(boat_t* b);
+
+/**
+ * Fire the boat's cannon!
+ */
+void b_fire(boat_t* b);
 
 #endif

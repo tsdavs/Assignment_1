@@ -14,6 +14,7 @@
 #include "euclidean1/object/cannon.h"
 #include "euclidean1/object/tower.h"
 #include "euclidean1/system/aabb.h"
+#include "euclidean1/object/projectile.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -24,7 +25,9 @@
 
 static engine_t engine;
 
-extern water_t water;
+extern water_t          water;
+extern active_list_t    p_list;
+
 
 static bool drawNormals     = false;
 static bool drawTangents    = false;
@@ -62,12 +65,25 @@ static void draw(void)
         drawAABB(&(p1.b_vol));
         drawAABB(&(p2.b_vol));
     	drawAABB(&(tower.b_vol));
-	}	
+    
+        for(int i = 0; i < MAX_PROJECTILES; i++)
+        {
+            if(p_list.projectiles[i] != NULL)
+                drawAABB(&(p_list.projectiles[i]->b_vol));
+        }
+    }
+
+    for(int i = 0; i < MAX_PROJECTILES; i++)
+    {
+        if(p_list.projectiles[i] != NULL)
+            p_draw(p_list.projectiles[i]);
+    }	
 
     b_drawBoat(&p1);
     b_drawBoat(&p2);
 	t_draw(&tower, 1.0f, 1.0f, 0.0f);
-	w_drawSine(drawNormals, drawTangents);
+
+    w_drawSine(drawNormals, drawTangents);
   
 
 
@@ -104,6 +120,18 @@ static void e_update(void)
     b_update(&p1, dt);
     b_update(&p2, dt);
 
+    for(int i = 0; i < MAX_PROJECTILES; i++)
+    {
+        int ret;
+        if(p_list.projectiles[i] != NULL)
+        {
+            ret = p_update(p_list.projectiles[i], dt);
+
+            if(ret)
+                p_list.projectiles[i] = NULL;
+        }
+    }
+
 	// A collision has occured between the two boats
     if(testIntersection(&(p1.b_vol), &(p2.b_vol)))
     {
@@ -122,6 +150,39 @@ static void e_update(void)
 	{
 		p2.curr_speed += 0.027f;
 	}
+
+    for(int i = 0; i < MAX_PROJECTILES; i++)
+    {
+        int ret;
+        if(p_list.projectiles[i] != NULL)
+        {
+            projectile_t* p = p_list.projectiles[i];
+
+            if(testIntersection(&(p1.b_vol), &(p->b_vol)) && p1.id != 0)
+            {
+                printf("p1 collision!\n");
+
+                free(p);
+                p_list.projectiles[i] = NULL; 
+            }
+
+            if(testIntersection(&(p2.b_vol), &(p->b_vol)) && p2.id != 1)
+            {
+                printf("p2 collision!\n");
+
+                free(p);
+                p_list.projectiles[i] = NULL;
+            }
+
+            if(testIntersection(&(tower.b_vol), &(p->b_vol)))
+            {
+                printf("tower collision!\n");
+
+                free(p);
+                p_list.projectiles[i] = NULL;
+            }
+        }
+    }
 
     prev_t = t;
     
@@ -216,6 +277,13 @@ void e_input(unsigned char c, int x, int y)
         if(p2.cannon.z_rot > 0.0f)
             c_rotateCannon(&p2.cannon, -2.0f);
         break;
+
+    case 'e':
+        b_fire(&p1);
+        break;
+    case 'i':
+        b_fire(&p2);
+        break;
     default:
         break;
     }
@@ -244,12 +312,16 @@ bool e_init(char** argv)
 	water.y_vals = (float*)calloc(WATER_MAX_TESS + 1, sizeof(float));
     water.x_vals = (float*)calloc(WATER_MAX_TESS + 1, sizeof(float));
 
-    b_init(&p1, -0.8f, 0.0f, 0.1f, 0.1f, 0.5f, 45.0f, 1.0f, 0.0f, 0.0f, false);
-    b_init(&p2, 0.8f, 0.0f, 0.1f, 0.1f, 0.5f, 45.0f, 0.0f, 0.0f, 1.0f, true);
+    b_init(&p1, 0, -0.8f, 0.0f, 0.1f, 0.1f, 0.5f, 45.0f, 1.0f, 0.0f, 0.0f, false);
+    b_init(&p2, 1, 0.8f, 0.0f, 0.1f, 0.1f, 0.5f, 45.0f, 0.0f, 0.0f, 1.0f, true);
 	t_init(&tower, -0.25f, 0.3f, 0.5f, -1.3f);
 
-	srand(time(NULL));
-
+    p_list.num = 0;
+    for(int i = 0; i < MAX_PROJECTILES; i++)
+    {
+        p_list.projectiles[i] = NULL;
+    }
+    
     GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
 	GLCall(glEnable(GL_BLEND))
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA))

@@ -2,8 +2,12 @@
  *  Implementation of cannon.h
  */
 #include "euclidean1/object/cannon.h"
+#include "euclidean1/math/angle.h"
+#include "euclidean1/object/projectile.h"
 
 #include "gl_helper.h"
+
+#include <math.h>
 
 void c_drawCannon(cannon_t* c, float r, float g, float b)
 {
@@ -26,4 +30,43 @@ void c_drawCannon(cannon_t* c, float r, float g, float b)
 void c_rotateCannon(cannon_t* c, float angle)
 {
     c->z_rot += angle;
+}
+
+void c_fireCannon(cannon_t* c, float angle, float scale, bool flip)
+{
+    projectile_t* p;
+    float x;
+    float y;
+    float vx;
+    float vy;
+
+
+/**
+    if(!flip)
+        x = c->x + ((c->length * scale) * cosf(ANG_2_RAD(c->z_rot)) * cosf(ANG_2_RAD(angle) * sinf(ANG_2_RAD(angle))));
+    else
+        x = c->x - ((c->length * scale) * cosf(ANG_2_RAD(c->z_rot)) * cosf(ANG_2_RAD(angle) * sinf(ANG_2_RAD(angle))));
+
+    y = c->y + ((c->length * scale) * sinf(ANG_2_RAD(c->z_rot)) * cosf(ANG_2_RAD(c->z_rot)));
+
+**/
+    if(!flip)
+        x = c->x + ((c->length * scale) * cosf(ANG_2_RAD(c->z_rot)));
+    else
+        x = c->x - ((c->length * scale) * cosf(ANG_2_RAD(c->z_rot)));
+
+    y = c->y + ((c->length * scale) * sinf(ANG_2_RAD(c->z_rot)));
+
+    //x = x * cosf(ANG_2_RAD(angle)) - y * sinf(ANG_2_RAD(angle));
+    //y = x * sinf(ANG_2_RAD(angle)) + x * cosf(ANG_2_RAD(angle));
+
+    vx = 1.9f * cosf(ANG_2_RAD(c->z_rot));
+    vy = 2.5f * sinf(ANG_2_RAD(c->z_rot));
+
+    if(flip)    
+        vx = -vx;
+
+    p_init(p, x, y, vx, vy, 0.01f);
+    printf("angle: %f, x: %f, y: %f, vx: %f, vy: %f\n", angle, x, y, vx, vy);
+    
 }

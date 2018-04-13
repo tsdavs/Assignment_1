@@ -32,10 +32,12 @@ static bool testIntersection(AABB* b1, AABB* b2)
     if(b1->max > b2->min && b1->min < b2->max && b1->y < b2->y + b2->height && b1->y + b1->height > b2->y)
         return true;
 
-	if(b1-> max > b2->min && b1-> min < b2->max)
-		return true;
-
     return false;
+}
+
+static void printAABB(AABB* b)
+{
+    printf("bounding volume info: x: %f, y: %f, min: %f, max: %f, width: %f, height: %f\n", b->x, b->y, b->min, b->max, b->width, b->height);
 }
 
 static void drawAABB(AABB* b)

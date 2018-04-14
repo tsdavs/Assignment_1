@@ -78,7 +78,7 @@ void p_draw(projectile_t* p)
     // Wow, how fucking easy is this one!
 
     GLCall(glPushMatrix())
-    GLCall(glColor3f(1.0f, 0.0f, 0.0f));
+    GLCall(glColor3f(1.0f, 1.0f, 1.0f));
 
     GLCall(glTranslatef(p->x, p->y, 0.0f))
     glutSolidSphere(p->r, 10, 10); 

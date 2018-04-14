@@ -57,5 +57,5 @@ void t_draw(tower_t* t, float r, float g, float b)
 
 void t_fire(tower_t* t)
 {
-	c_fireCannon(&t->cannon, 0.0f, 1.0f, false);
+	c_fireCannon(&t->cannon, 0.0f, 0.0f, 0.0f, 1.0f, false);
 }

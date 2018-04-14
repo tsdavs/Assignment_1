@@ -50,6 +50,11 @@ int p_update(projectile_t* projectile, float dt);
  */
 void p_draw(projectile_t* projectile);
 
+/**
+ *  Remove a projectile from the actile list
+ */
+void p_remove(projectile_t* p, int i);
+
 
 
 #endif

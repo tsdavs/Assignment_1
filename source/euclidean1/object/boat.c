@@ -149,6 +149,6 @@ void b_fire(boat_t* b)
     if(b->wait_time <= 0.0f)
     {
         b->wait_time = 1.0f;
-        c_fireCannon(&b->cannon, b->z_rot, 0.1, b->flip);
+        c_fireCannon(&b->cannon, b->x, b->y, b->z_rot, 0.1, b->flip);
     }
 }

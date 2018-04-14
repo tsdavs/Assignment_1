@@ -32,4 +32,9 @@ void t_draw(tower_t* t, float r, float g, float b);
  */
 void t_update(tower_t* t);
 
+/**
+ *  Fire the tower's cannon
+ */
+void t_fire(tower_t* t);
+
 #endif

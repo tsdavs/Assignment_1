@@ -57,8 +57,8 @@ void c_fireCannon(cannon_t* c, float xi, float yi, float angle, float scale, boo
 
     y = c->y + ((c->length * scale) * sinf(ANG_2_RAD(c->z_rot))) + 0.1f;
 
-    x -= x *(cosf(ANG_2_RAD(angle)) - y * sinf(ANG_2_RAD(angle))) * 0.1f;;
-    //y = x * (sinf(ANG_2_RAD(angle)) + x * cosf(ANG_2_RAD(angle)));
+    x -= x * (cosf(ANG_2_RAD(angle)) - y * sinf(ANG_2_RAD(angle))) * 0.1f;
+    y -= x * (sinf(ANG_2_RAD(angle)) + y * cosf(ANG_2_RAD(angle))) * 0.1f;
 
     vx = 1.2f * cosf(ANG_2_RAD(c->z_rot));
     vy = 1.2f * sinf(ANG_2_RAD(c->z_rot));

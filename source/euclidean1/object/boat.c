@@ -9,7 +9,7 @@
 
 #include <math.h>
 
-#define FRICTIONAL_FORCE 20.0f
+#define DRAG_FORCE 20.0f
 
 static float prev_z_rot = 0.0f;
 
@@ -110,8 +110,27 @@ void b_drawBoat(boat_t* b)
 
 void b_update(boat_t* b, float dt)
 {   
+    // If either boat tries to clip outside of the left or right side of the viewing frustum, 
+    // apply a strong force in the opposite direction to kick them back in.
+
+    // Left boat
+    if(!b->flip)
+    {
+        if(b->b_vol.min < -1.0f)
+        {
+            b->curr_speed += 0.027f;
+        }
+    }
+    else // Right boat
+    {
+        if(b->b_vol.min > 1.0f)
+        {
+            b->curr_speed -= 0.027f;
+        }
+    }
+
     b->x += b->curr_speed * dt * 1.5f;
-    b->curr_speed *= (FRICTIONAL_FORCE * 0.048f);
+    b->curr_speed *= (DRAG_FORCE * 0.048f);
 
 	/**
 	if(b->curr_speed > 0.0f)
